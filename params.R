@@ -51,3 +51,23 @@ GG_AG <- (1-b)*(1-g)*AA + (1/2)*(1-b)*(1-g)*(AB + AG)
 GG_BG <- (1-b)*BB + (1/2)*(1-b)*(AB + BG) + (1/2)*(2*b*(1-b))*(AG + BG) + (2*b*(1-b))*GG
 GG_GG <- (1-b)*g*AA + (1/2)*(1-b)*g*(AB + AG) + (1/2)*((1-b)^2)*(AG + BG) + ((1-b)^2)*(GG)
 
+#Concatenate rows
+rowAA <- c(AA_AA, AA_AB, AA_BB, AA_AG, AA_BG, AA_GG)
+rowAB <- c(AB_AA, AB_AB, AB_BB, AB_AG, AB_BG, AB_GG)
+rowBB <- c(BB_AA, BB_AB, BB_BB, BB_AG, BB_BG, BB_GG)
+rowAG <- c(AG_AA, AG_AB, AG_BB, AG_AG, AG_BG, AG_GG)
+rowBG <- c(BG_AA, BG_AB, BG_BB, BG_AG, BG_BG, BG_GG)
+rowGG <- c(GG_AA, GG_AB, GG_BB, GG_AG, GG_BG, GG_GG)
+
+#Transition matrix
+(trans_matrix <- rbind(rowAA, rowAB, rowBB, rowAG, rowBG, rowGG))
+
+#Gene Drive Efficiency
+#from Gantz et al.
+g <- 0.98
+
+#Gene Drive Resistance Rate
+# chance of becoming resistant to the gene drive
+# arbitratily chosen for now
+b = 0.1
+
