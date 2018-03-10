@@ -1,3 +1,10 @@
+#Initial Genotype Conditions
+AA <- 99
+AB <- 0
+BB <- 0
+AG <- 0
+BG <- 0
+GG <- 1
 
 #This contains all the transition probabilities. We'll fill these into our transition matrix.
 
@@ -69,5 +76,5 @@ g <- 0.98
 #Gene Drive Resistance Rate
 # chance of becoming resistant to the gene drive
 # arbitratily chosen for now
-b = 0.1
+b <- 0.1
 
