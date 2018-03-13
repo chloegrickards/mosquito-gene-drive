@@ -8,10 +8,20 @@ BG <- 0
 GG <- 1
 
 #Important Constants
-#k is the carry
-k <- 
+#k is the carrying capacity
+#Units = number of mosquitoes
+k <- 100
 
 #Reproduction Rates
+#r = intrinsic growth rate
+#Units = number of mosquitoes
+r <- 40
+#g = fitness cost of the gene drive
+#Units = number of mosquitoes
+cost_g <- 0.1*r
+#r = growth rate for AG and Bg
+r_xG <- r - cost_g
+r_GG <- r - 2*cost_g
 
 
 #Transition Matrix set-up
