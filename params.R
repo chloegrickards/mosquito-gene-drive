@@ -7,6 +7,13 @@ AG <- 0
 BG <- 0
 GG <- 1
 
+#Important Constants
+#k is the carry
+k <- 
+
+#Reproduction Rates
+
+
 #Transition Matrix set-up
 #This contains all the transition probabilities. We'll fill these into our transition matrix.
 #Format = currentgenotype_nextgenotype
