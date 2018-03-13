@@ -145,9 +145,7 @@ def main():
         # we do this below as logistic growth within each category, given the
         #   genotype flux calculated above
         # output of transitionMatrix = number of individuals changing between genotype, 
-        #   applying birth/death rates, and infection rates, already present
-        # to use in A/M x/y model: x = sum(AA, AB, BB, (1-xi)AG, )
-                                #   y = sum()
+        #   applying birth/death rates and infection rates
 
 
 
