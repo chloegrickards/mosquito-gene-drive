@@ -7,7 +7,7 @@ BB <- rep(0,tspan)
 AG <- rep(0,tspan)
 BG <- rep(0,tspan)
 GG <- rep(0,tspan)
-
+#
 #Initial population
 AA[1] <- 99
 AB[1] <- 0
@@ -19,29 +19,51 @@ GG[1] <- 1
 ##GENE DRIVE RATES##
 # gamma is the gene drive dominance (relavent to AG and BG)
 gamma <- 0.5
+#
 # xi is the actual resistance the gene drive gives
 xi <- 0.9
 
-##DEATH RATES##
-#Natural Death Rate
-#life span
-# Units = number of generations
-lspan <- 3
-#death rate
-delta <- 1/lspan
-
-#Infection rate
+##INFECTION RATES##
+#beta is infection rate
 beta <- 0.3
-
-#Infection Death Rate
+#
+#delta_i is infection Death Rate
 delta_i <- 0.5
 
-#Death rates for each genotype
+##POPULATION RATES##
+#Death Rates
+#lspan is life span
+# Units = number of generations
+lspan <- 3
+#delta is natural death rate
+delta <- 1/lspan
+#d, dxG, and dGG are death rates for each genotype
+# from natural and infection-caused death
 d <- delta + beta*delta_i
 dxG <- delta + beta*delta_i*(1 - gamma*xi)
 dGG <- delta + beta*delta_i*(1-xi)
+#
+#Growth Rates
+# r = intrinsic growth rate
+# Use r for genotypes: AA, AB, BB
+#Units = number of mosquitoes
+r <- 40
+#g = fitness cost of the gene drive
+#Units = number of mosquitoes
+cost_g <- 0.1*r
+#r_xG = adjusted growth rate for genotypes: AG, BG
+r_xG <- r - cost_g
+#r_GG = adjusted growth rate for genotype: GG
+r_GG <- r - 2*cost_g
+#
+#k is the carrying capacity
+#Units = number of mosquitoes
+k <- 100
+
 
 transition_matrix <- function(args) {
+  
+  
   
   return(tm)
 }
