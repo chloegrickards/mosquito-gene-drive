@@ -199,12 +199,12 @@ for(i in 2:ngen) {
   #AA[i-1](1-d) + AA_AA*pAA*log_growth
   
   #check if this multiplication actually works lollll what is R
-  pop_rowAA <- c(AA[i-1]/pAA + AA_AA, AA_AB, AA_BB, AA_AG, AA_BG, AA_GG)*pAA
-  pop_rowAB <- c(AB_AA, AB[i-1]/pAB + AB_AB, AB_BB, AB_AG, AB_BG, AB_GG)*pAB
-  pop_rowBB <- c(BB_AA, BB_AB, BB[i-1]/pBB + BB_BB, BB_AG, BB_BG, BB_GG)*pBB
-  pop_rowAG <- c(AG_AA, AG_AB, AG_BB, AG[i-1]/pAG + AG_AG, AG_BG, AG_GG)*pAG
-  pop_rowBG <- c(BG_AA, BG_AB, BG_BB, BG_AG, BG[i-1]/pBG + BG_BG, BG_GG)*pBG
-  pop_rowGG <- c(GG_AA, GG_AB, GG_BB, GG_AG, GG_BG, GG[i-1]/pGG + GG_GG)*pGG
+  pop_rowAA <- c(AA[i-1]/(pAA*log_growth) + AA_AA, AA_AB, AA_BB, AA_AG, AA_BG, AA_GG)*pAA*log_growth
+  pop_rowAB <- c(AB_AA, AB[i-1]/(pAB*log_growth) + AB_AB, AB_BB, AB_AG, AB_BG, AB_GG)*pAB*log_growth
+  pop_rowBB <- c(BB_AA, BB_AB, BB[i-1]/(pBB*log_growth) + BB_BB, BB_AG, BB_BG, BB_GG)*pBB*log_growth
+  pop_rowAG <- c(AG_AA, AG_AB, AG_BB, AG[i-1]/(pAG*log_growth) + AG_AG, AG_BG, AG_GG)*pAG*log_growth
+  pop_rowBG <- c(BG_AA, BG_AB, BG_BB, BG_AG, BG[i-1]/(pBG*log_growth) + BG_BG, BG_GG)*pBG*log_growth
+  pop_rowGG <- c(GG_AA, GG_AB, GG_BB, GG_AG, GG_BG, GG[i-1]/(pGG*log_growth) + GG_GG)*pGG*log_growth
   
   # Population Transition matrix
   #This takes the genotype ratios from Step 1 and applies population dynamics.
