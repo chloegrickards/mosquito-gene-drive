@@ -79,6 +79,10 @@ Eg <- rep(0,ngen)
 Ig <- rep(0,ngen)
 Rg <- rep(0,ngen)
 
+##MOSQUITO MALARIA##
+
+##HUMAN MALARIA##
+
 
 # Iterate through each generation
 for(i in 2:ngen) {
@@ -236,7 +240,7 @@ for(i in 2:ngen) {
   
   #Number of susceptible mosquitoes in a population
   #may not need Sm[i], esp. if we're just using X, which would require X[i]
-  Sm[i] <- AA[i] + AB[i] + BB[i] + (1-gamma*xi)*AG[i] + (1-gamma*xi)*BG[i] + (1-xi)*GG[i]
+  Sm <- AA[i] + AB[i] + BB[i] + (1-gamma*xi)*AG[i] + (1-gamma*xi)*BG[i] + (1-xi)*GG[i]
   
   
   #STEP 5: Malaria (human) model
