@@ -30,52 +30,52 @@ r_GG <- r - 2*cost_g
 #Format = currentgenotype_nextgenotype
 
 #Row 1
-AA_AA <- r*AA + (1/2)*(r*AB + ((r+r_xG)/2)*AG)
-AA_AB <- r*BB + (1/2)*(r*AB + ((r+r_xG)/2)*BG) + (b/2)*(((r+r_xG)/2)*AG + ((r+r_xG)/2)*BG) + b*((r+r_GG)/2)*GG
+AA_AA <- r*pAA + (1/2)*(r*pAB + ((r+r_xG)/2)*pAG)
+AA_AB <- r*pBB + (1/2)*(r*pAB + ((r+r_xG)/2)*pBG) + (b/2)*(((r+r_xG)/2)*pAG + ((r+r_xG)/2)*pBG) + b*((r+r_GG)/2)*pGG
 AA_BB <- 0
-AA_AG <- (1-b)*(1-g)*(1/2)*((r+r_xG)/2)*(AG + BG) + (1-b)*(1-g)*((r+r_GG)/2)*GG
+AA_AG <- (1-b)*(1-g)*(1/2)*((r+r_xG)/2)*(pAG + pBG) + (1-b)*(1-g)*((r+r_GG)/2)*pGG
 AA_BG <- 0
-AA_GG <- (1-b)*(g)*(1/2)*((r+r_xG)/2)*(AG + (BG) + (1-b)*(g)*((r+r_xG)/2)*GG
+AA_GG <- (1-b)*g*(1/2)*((r+r_xG)/2)*(pAG + pBG) + (1-b)*g*((r+r_xG)/2)*pGG
 
 #Row 2
-AB_AA <- (1/2)*r*AA + (1/4)*(r*AB + ((r+r_xG)/2)*AG)
-AB_AB <- (1/2)*r*(AA + AB + BB) + (1/4)*((r+r_xG)/2)*(AG + BG) + (1/4)*b*((r+r_xG)/2)*(AG + BG) + (1/2)*b*((r+r_GG)/2)*GG
-AB_BB <- (1/4)*(r*AB + ((r+r_xG)/2)*BG) + (1/2)*r*BB + (1/4)*b*(AG + BG) + (1/2)*b*GG
-AB_AG <- (1/4)*(1-b)*(1-g)*(AG + BG) + (1/2)*(1-b)*(1-g)*GG
-AB_BG <- (1/4)*(1-b)*(AG + BG) + (1/2)*(1-b)*GG
-AB_GG <- (1/4)*(1-b)*(g)*(AG + BG) + (1/2)*(1-b)*(g)*GG
+AB_AA <- (1/2)*r*pAA + (1/4)*(r*pAB + ((r+r_xG)/2)*pAG)
+AB_AB <- (1/2)*r*(pAA + pAB + pBB) + (1/4)*((r+r_xG)/2)*(pAG + pBG) + (1/4)*b*((r+r_xG)/2)*(pAG + pBG) + (1/2)*b*((r+r_GG)/2)*pGG
+AB_BB <- (1/4)*(r*pAB + ((r+r_xG)/2)*pBG) + (1/2)*r*pBB + (1/4)*b*((r+r_xG)/2)*(pAG + pBG) + (1/2)*b*((r+r_GG)/2)*pGG
+AB_AG <- (1/4)*(1-b)*(1-g)*((r+r_xG)/2)*(pAG + pBG) + (1/2)*(1-b)*(1-g)*((r+r_GG)/2)*pGG
+AB_BG <- (1/4)*(1-b)*((r+r_xG)/2)*(pAG + pBG) + (1/2)*(1-b)*((r+r_GG)/2)*pGG
+AB_GG <- (1/4)*(1-b)*g*((r+r_xG)/2)*(pAG + pBG) + (1/2)*(1-b)*g*((r+r_xG)/2)*pGG
 
 #Row 3
 BB_AA <- 0
-BB_AB <- AA + (1/2)*(AB + AG)
-BB_BB <- BB + (1/2)*(AB + BG) + (1/2)*b*(AG + BG) + b*GG
+BB_AB <- r*pAA + (1/2)*(r*pAB + ((r+r_xG)/2)*pAG)
+BB_BB <- r*pBB + (1/2)*(r*pAB + ((r+r_xG)/2)*pBG) + (1/2)*b*((r+r_xG)/2)*(pAG + pBG) + b*((r+r_GG)/2)*pGG
 BB_AG <- 0
-BB_BG <- (1/2)*(1-b)*(AG + BG) + (1-b)*GG
+BB_BG <- (1/2)*(1-b)*((r+r_xG)/2)*(pAG + pBG) + (1-b)*((r+r_GG)/2)*pGG
 BB_GG <- 0
 
 #Row 4
-AG_AA <- (1/2)*AA + (1/4)*(AB + AG)
-AG_AB <- (1/2)*b*(AA + AG + GG) + (1/4)*(AB + BG) + (1/4)*b*(AB + BG) + (1/2)*BB
-AG_BB <- (1/2)*b*(BB) + (1/4)*(b^2)*(AG + BG) + (1/4)*b*(AB + BG) + (1/2)*(b^2)*GG
-AG_AG <- (1/2)*(1-b)*(1-g)*(AA + AG + GG) + (1/4)*(1-b)*(1-g)*(AB + BG)
-AG_BG <- (1/4)*(1-b)*(AB + BG) + (1/2)*(1-b)*BB + (1/4)*(2*b*(1-b))*(AG + BG) + (1/2)*(2*b*(1-b))*GG
-AG_GG <- (1/2)*(1-b)*g*(AA + AG + GG) + (1/4)*(1-b)*g*(AB + BG) + (1/4)*((1-b)^2)*(AG + BG) + (1/2)*((1-b)^2)*GG
+AG_AA <- (1/2)*r*pAA + (1/4)*(r*pAB + ((r+r_xG)/2)*pAG)
+AG_AB <- (1/2)*b*(r*pAA + ((r+r_xG)/2)*pAG + ((r+r_GG)/2)*pGG) + (1/4)*(r*pAB + ((r+r_xG)/2)*pBG) + (1/4)*b*(r*pAB + ((r+r_xG)/2)*pBG) + (1/2)*r*pBB
+AG_BB <- (1/2)*b*r*pBB + (1/4)*(b^2)*((r+r_xG)/2)*(pAG + pBG) + (1/4)*b*(r*pAB + ((r+r_xG)/2)*pBG) + (1/2)*(b^2)*((r+r_GG)/2)*pGG
+AG_AG <- (1/2)*(1-b)*(1-g)*(r*pAA + ((r+r_xG)/2)*pAG + ((r+r_GG)/2)*pGG) + (1/4)*(1-b)*(1-g)*(r*pAB + ((r+r_xG)/2)*pBG)
+AG_BG <- (1/4)*(1-b)*(r*pAB + ((r+r_xG)/2)*pBG) + (1/2)*(1-b)*r*pBB + (1/4)*(2*b*(1-b))*((r+r_xG)/2)*(pAG + pBG) + (1/2)*(2*b*(1-b))*((r+r_GG)/2)*pGG
+AG_GG <- (1/2)*(1-b)*g*(r*pAA + ((r+r_xG)/2)*pAG + ((r+r_GG)/2)*pGG) + (1/4)*(1-b)*g*(r*pAB + ((r+r_xG)/2)*pBG) + (1/4)*((1-b)^2)*((r+r_xG)/2)*(pAG + pBG) + (1/2)*((1-b)^2)*((r+r_GG)/2)*pGG
 
 #Row 5
 BG_AA <- 0
-BG_AB <- (1/2)*AA + (1/2)*b*AA + (1/4)*(AB + AG) + (1/4)*b*(AB + AG)
-BG_BB <- (1/4)*(AB + BG) + (1/4)*b*(AB + AG) + (1/2)*BB + (1/2)*b*(BB + BG + GG) + (1/4)*(b^2)*(AG + BG) + (1/2)*(b^2)*GG
-BG_AG <- (1/2)*(1-b)*(1-g)*AA + (1/4)*(1-b)*(1-g)*(AB + AG)
-BG_BG <- (1/4)*(1-b)*(AB + AG) + (1/2)*(1-b)*(BB + BG + GG) + (1/4)*(2*b*(1-b))*(AG + BG) + (1/2)*(2*b*(1-b))*GG
-BG_GG <- (1/2)*(1-b)*(g)*AA + (1/4)*(1-b)*(g)*(AB + AG) + (1/4)*((1-b)^2)*(AG + BG) + (1/2)*((1-b)^2)*GG
+BG_AB <- (1/2)*r*pAA + (1/2)*b*r*pAA + (1/4)*(r*pAB + ((r+r_xG)/2)*pAG) + (1/4)*b*(r*pAB + ((r+r_xG)/2)*pAG)
+BG_BB <- (1/4)*(r*pAB + ((r+r_xG)/2)*pBG) + (1/4)*b*(r*pAB + ((r+r_xG)/2)*pAG) + (1/2)*r*pBB + (1/2)*b*(r*pBB + ((r+r_xG)/2)*pBG + ((r+r_GG)/2)*pGG) + (1/4)*(b^2)*((r+r_xG)/2)*(pAG + pBG) + (1/2)*(b^2)*((r+r_GG)/2)*pGG
+BG_AG <- (1/2)*(1-b)*(1-g)*r*pAA + (1/4)*(1-b)*(1-g)*(r*pAB + ((r+r_xG)/2)*pAG)
+BG_BG <- (1/4)*(1-b)*(r*pAB + ((r+r_xG)/2)*pAG) + (1/2)*(1-b)*(r*pBB + ((r+r_xG)/2)*pBG + ((r+r_GG)/2)*pGG) + (1/4)*(2*b*(1-b))*((r+r_xG)/2)*(pAG + pBG) + (1/2)*(2*b*(1-b))*((r+r_GG)/2)*pGG
+BG_GG <- (1/2)*(1-b)*g*r*pAA + (1/4)*(1-b)*g*(r*pAB + ((r+r_xG)/2)*pAG) + (1/4)*((1-b)^2)*((r+r_xG)/2)*(pAG + pBG) + (1/2)*((1-b)^2)*((r+r_GG)/2)*pGG
 
 #Row 6                        
 GG_AA <- 0
-GG_AB <- b*AA + (1/2)*b*(AB + AG)
-GG_BB <- b*BB + (1/2)*b*(AB + BG) + (1/2)*(b^2)*(AG + BG) + (b^2)*GG
-GG_AG <- (1-b)*(1-g)*AA + (1/2)*(1-b)*(1-g)*(AB + AG)
-GG_BG <- (1-b)*BB + (1/2)*(1-b)*(AB + BG) + (1/2)*(2*b*(1-b))*(AG + BG) + (2*b*(1-b))*GG
-GG_GG <- (1-b)*g*AA + (1/2)*(1-b)*g*(AB + AG) + (1/2)*((1-b)^2)*(AG + BG) + ((1-b)^2)*GG
+GG_AB <- b*r*pAA + (1/2)*b*(r*pAB + ((r+r_xG)/2)*pAG)
+GG_BB <- b*r*pBB + (1/2)*b*(r*pAB + ((r+r_xG)/2)*pBG) + (1/2)*(b^2)*((r+r_xG)/2)*(pAG + pBG) + (b^2)*((r+r_GG)/2)*pGG
+GG_AG <- (1-b)*(1-g)*r*pAA + (1/2)*(1-b)*(1-g)*(r*pAB + ((r+r_xG)/2)*pAG)
+GG_BG <- (1-b)*r*pBB + (1/2)*(1-b)*(r*pAB + ((r+r_xG)/2)*pBG) + (1/2)*(2*b*(1-b))*((r+r_xG)/2)*(pAG + pBG) + (2*b*(1-b))*((r+r_GG)/2)*pGG
+GG_GG <- (1-b)*g*r*pAA + (1/2)*(1-b)*g*(r*pAB + ((r+r_xG)/2)*pAG) + (1/2)*((1-b)^2)*((r+r_xG)/2)*(pAG + pBG) + ((1-b)^2)*((r+r_GG)/2)*pGG
 
 #Concatenate rows
 rowAA <- c(AA_AA, AA_AB, AA_BB, AA_AG, AA_BG, AA_GG)
