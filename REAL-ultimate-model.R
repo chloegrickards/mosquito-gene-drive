@@ -1,14 +1,17 @@
 #sorry it's long
 
+##GENERAL CONSTANTS##
+#Number of mosquito generations
+ngen <- 100
 
 ##GENOTYPES##
 #Create empty genotype vectors to fill
-AA <- rep(0,tspan)
-AB <- rep(0,tspan)
-BB <- rep(0,tspan)
-AG <- rep(0,tspan)
-BG <- rep(0,tspan)
-GG <- rep(0,tspan)
+AA <- rep(0,ngen)
+AB <- rep(0,ngen)
+BB <- rep(0,ngen)
+AG <- rep(0,ngen)
+BG <- rep(0,ngen)
+GG <- rep(0,ngen)
 #
 #Initial population
 AA[1] <- 99
@@ -22,7 +25,7 @@ GG[1] <- 1
 # gamma is the gene drive dominance (relavent to AG and BG)
 gamma <- 0.5
 #
-# xi is the actual resistance the gene drive gives
+# xi is a measure of how much infection resistance that a gene drive can pass on to a mosquito
 xi <- 0.9
 #
 #g is gene drive efficiency
@@ -70,25 +73,42 @@ r_GG <- r - 2*cost_g
 #Units = number of mosquitoes
 k <- 100
 
-#Transition Matrix
-# Takes place in two parts
-#
-# Part 1: Genotype Transition matrix
-#This function lists all of the genotype changes from all possible reproduction events
-# tracks changes from genotype to genotype, dependent on:
-# - Mendelian inheritance
-# - resistance to the gene drive
-# - gene drive
-# - intrinsic growth rate
-# - fitness cost to the intrinsic growth rate
-#
-# Part 2: Population Transition Matrix
-# 
-genotype_transition_matrix <- function(pAA, pAB, pBB, pAG, pBG, pGG, r, r_xG, r_GG, b, g) {
-  
-  # First calculate each cell of the matrix. Then assemble the matrix
-  #Format = currentgenotype_nextgenotype
+##GENE DRIVE SEIR##
+Sg <- rep(0,ngen)
+Eg <- rep(0,ngen)
+Ig <- rep(0,ngen)
+Rg <- rep(0,ngen)
 
+
+# Iterate through each generation
+for(i in 2:ngen) {
+  
+  population_og <- c(AA[i-1], AB[i-1], BB[i-1], AG[i-1], BG[i-1], GG[i-1])
+  
+  #STEP 1: Calculate genotype changes for each new generation
+  
+  #Accounting for death rates
+  AA[i-1] <- AA[i-1]*(1 - d)
+  AB[i-1] <- AB[i-1]*(1 - d)
+  BB[i-1] <- BB[i-1]*(1 - d)
+  AG[i-1] <- AG[i-1]*(1 - dxG)
+  BG[i-1] <- BG[i-1]*(1 - dxG)
+  GG[i-1] <- GG[i-1]*(1 - dGG)
+  population_prev <- c(AA[i-1], AB[i-1], BB[i-1], AG[i-1], BG[i-1], GG[i-1])
+  pop_tot_prev <- sum(population_prev)
+  
+  #Setting up proportions
+  pAA <- AA[i-1]/pop_tot_prev
+  pAB <- AB[i-1]/pop_tot_prev
+  pBB <- BB[i-1]/pop_tot_prev
+  pAG <- AG[i-1]/pop_tot_prev
+  pBG <- BG[i-1]/pop_tot_prev
+  pGG <- GG[i-1]/pop_tot_prev
+  genotypes_prev <- c(pAA, pAB, pBB, pAG, pBG, pGG)
+  
+  #Transition Matrix calculations
+  #So fun.
+  
   #Row 1
   AA_AA <- r*pAA + (1/2)*(r*pAB + ((r+r_xG)/2)*pAG)
   AA_AB <- r*pBB + (1/2)*(r*pAB + ((r+r_xG)/2)*pBG) + (b/2)*(((r+r_xG)/2)*pAG + ((r+r_xG)/2)*pBG) + b*((r+r_GG)/2)*pGG
@@ -147,6 +167,7 @@ genotype_transition_matrix <- function(pAA, pAB, pBB, pAG, pBG, pGG, r, r_xG, r_
 
   # Genotype Transition matrix
   #This function lists all of the genotype changes from all possible reproduction events
+  # Output = genotype frequencies
   # tracks changes from genotype to genotype, dependent on:
   # - Mendelian inheritance
   # - resistance to the gene drive
@@ -154,6 +175,11 @@ genotype_transition_matrix <- function(pAA, pAB, pBB, pAG, pBG, pGG, r, r_xG, r_
   # - intrinsic growth rate
   # - fitness cost to the intrinsic growth rate
   gtm <- rbind(gen_rowAA, gen_rowAB, gen_rowBB, gen_rowAG, gen_rowBG, gen_rowGG))
+  genotypes_curr <- genotypes_prev*gtm
+  gen_tot_curr <- sum(genotypes_curr)
+  
+  
+  ##STEP 2: Calculate Population Changes for each new generation
   
   # Logistic Growth Equation
   # Integrated version, so that it fits with the time series format
@@ -161,65 +187,59 @@ genotype_transition_matrix <- function(pAA, pAB, pBB, pAG, pBG, pGG, r, r_xG, r_
   # Applied to the gene drive equation since density dependence impact developing (larval) mosquitoes
   # And we need a way to control the gene drive proportions anyway so that the gene drive doesn't explode our model :)
   # Equation below does NOT include r, that's determined by each transition matrix cell
-  log_growth <- (1/s_r)*(s_death*k/(s_death + (k - s_death)*math.exp(-s_r)) - s_death)
+  log_growth <- (1/gen_tot_curr)*(pop_tot_prev*k/(pop_tot_prev + (k - pop_tot_prev)*math.exp(-gen_tot_curr)) - pop_tot_prev)
   
+  #1-(sAA[i-1]*(mu + (1-mu)*rho))/sAA[i-1] + sAA_AA_r/(sAA[i-1]*s_r)*(s_death*k/(s_death + (k - s_death)*math.exp(-s_r)) - s_death)
+  #times everything by sAA[i-1]
+  #sAA[i-1]-(sAA[i-1]*(mu + (1-mu)*rho)) + sAA_AA_r/(s_r)*(s_death*k/(s_death + (k - s_death)*math.exp(-s_r)) - s_death)
+  #AA[i-1](1-d) + AA_AA*pAA*log_growth
   
-  pop_rowAA <- c(AA_AA, AA_AB, AA_BB, AA_AG, AA_BG, AA_GG)
-  pop_rowAB <- c(AB_AA, AB_AB, AB_BB, AB_AG, AB_BG, AB_GG)
-  pop_rowBB <- c(BB_AA, BB_AB, BB_BB, BB_AG, BB_BG, BB_GG)
-  pop_rowAG <- c(AG_AA, AG_AB, AG_BB, AG_AG, AG_BG, AG_GG)
-  pop_rowBG <- c(BG_AA, BG_AB, BG_BB, BG_AG, BG_BG, BG_GG)
-  pop_rowGG <- c(GG_AA, GG_AB, GG_BB, GG_AG, GG_BG, GG_GG)
+  #check if this multiplication actually works lollll what is R
+  pop_rowAA <- c(AA[i-1]/pAA + AA_AA, AA_AB, AA_BB, AA_AG, AA_BG, AA_GG)*pAA
+  pop_rowAB <- c(AB_AA, AB[i-1]/pAB + AB_AB, AB_BB, AB_AG, AB_BG, AB_GG)*pAB
+  pop_rowBB <- c(BB_AA, BB_AB, BB[i-1]/pBB + BB_BB, BB_AG, BB_BG, BB_GG)*pBB
+  pop_rowAG <- c(AG_AA, AG_AB, AG_BB, AG[i-1]/pAG + AG_AG, AG_BG, AG_GG)*pAG
+  pop_rowBG <- c(BG_AA, BG_AB, BG_BB, BG_AG, BG[i-1]/pBG + BG_BG, BG_GG)*pBG
+  pop_rowGG <- c(GG_AA, GG_AB, GG_BB, GG_AG, GG_BG, GG[i-1]/pGG + GG_GG)*pGG
   
-  return(ptm)
-}
+  # Population Transition matrix
+  #This takes the genotype ratios from Step 1 and applies population dynamics.
+  # Output = individuals of a certain genotype
+  # Dependent on the following:
+  # - logistic growth and related growth rates
+  # - death rates
+  ptm <- rbind(pop_rowAA, pop_rowAB, pop_rowBB, pop_rowAG, pop_rowBG, pop_rowGG))
 
-population_transition_matrix <- function(args) {
-  #AA_AA = 1-(sAA[i-1]*(mu + (1-mu)*rho))/sAA[i-1] + sAA_AA_r/(sAA[i-1]*s_r)
-  #AA_AA = sAA[i-1] - death*sAA[i-1] + sAA_AA_r*(growth eqn
-  #sAA_AA_r/(sAA[i-1]*s_r)*(s_death*k/(s_death + (k - s_death)*math.exp(-s_r)) - s_death)
+  population_curr = population_og*ptm
   
-  rowAA <- c(AA_AA, AA_AB, AA_BB, AA_AG, AA_BG, AA_GG)
-  rowAB <- c(AB_AA, AB_AB, AB_BB, AB_AG, AB_BG, AB_GG)
-  rowBB <- c(BB_AA, BB_AB, BB_BB, BB_AG, BB_BG, BB_GG)
-  rowAG <- c(AG_AA, AG_AB, AG_BB, AG_AG, AG_BG, AG_GG)
-  rowBG <- c(BG_AA, BG_AB, BG_BB, BG_AG, BG_BG, BG_GG)
-  rowGG <- c(GG_AA, GG_AB, GG_BB, GG_AG, GG_BG, GG_GG)
-  
-  #Transition matrix
-  ptm <- rbind(rowAA, rowAB, rowBB, rowAG, rowBG, rowGG)) * 
+  AA[i] <- population_curr[1]
+  AB[i] <- population_curr[2]
+  BB[i] <- population_curr[3]
+  AG[i] <- population_curr[4]
+  BG[i] <- population_curr[5]
+  GG[i] <- population_curr[6]
 
-  return(ptm)
-  
-}
 
-# R, first index = 1 because uggghh why
-for(i in 2:tspan) {
+  #STEP 3: Gene Drive SEIR model
   
-  #Accounting for death rates
-  AA[i-1] <- AA[i-1]*(1 - d)
-  AB[i-1] <- AB[i-1]*(1 - d)
-  BB[i-1] <- BB[i-1]*(1 - d)
-  AG[i-1] <- AG[i-1]*(1 - dxG)
-  BG[i-1] <- BG[i-1]*(1 - dxG)
-  GG[i-1] <- GG[i-1]*(1 - dGG)
-  population_prev <- c(AA[i-1], AB[i-1], BB[i-1], AG[i-1], BG[i-1], GG[i-1])
-  tot <- sum(population_prev)
+  #Susceptible to a gene drive "infection"
+  Sg[i] <- AA[i] + AB[i]
+  #Exposed to a gene drive "infection"
+  Eg[i] <- AG[i]
+  #"Infected" with a gene drive
+  Ig[i] <- GG[i]
+  #Recovered from a gene drive "infection"
+  Rg[i] <- BB[i] + BG[i]
   
-  #Setting up proportions
-  pAA <- AA[i-1]/tot
-  pAB <- AB[i-1]/tot
-  pBB <- BB[i-1]/tot
-  pAG <- AG[i-1]/tot
-  pBG <- BG[i-1]/tot
-  pGG <- GG[i-1]/tot
-  genotypes_prev <- c(pAA, pAB, pBB, pAG, pBG, pGG)
   
-  genotypes_curr = genotypes_prev*genotype_transition_matrix(pAA, pAB, pBB, pAG, pBG, pGG, r, r_xG, r_GG, b, g)
+  #STEP 4: Malaria (mosquito) model
   
-  population_curr = population_prev*population_transition_matrix(genotypes_curr)
-
+  #Number of susceptible mosquitoes in a population
+  #may not need Sm[i], esp. if we're just using X, which would require X[i]
+  Sm[i] <- AA[i] + AB[i] + BB[i] + (1-gamma*xi)*AG[i] + (1-gamma*xi)*BG[i] + (1-xi)*GG[i]
   
+  
+  #STEP 5: Malaria (human) model
 
 }
 
