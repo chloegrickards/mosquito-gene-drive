@@ -14,32 +14,33 @@ k <- 100
 
 #Reproduction Rates
 #r = intrinsic growth rate
+# Use r for genotypes: AA, AB, BB
 #Units = number of mosquitoes
 r <- 40
 #g = fitness cost of the gene drive
 #Units = number of mosquitoes
 cost_g <- 0.1*r
-#r = growth rate for AG and Bg
+#r_xG = adjusted growth rate for genotypes: AG, BG
 r_xG <- r - cost_g
+#r_GG = adjusted growth rate for genotype: GG
 r_GG <- r - 2*cost_g
-
 
 #Transition Matrix set-up
 #This contains all the transition probabilities. We'll fill these into our transition matrix.
 #Format = currentgenotype_nextgenotype
 
 #Row 1
-AA_AA <- AA + (1/2)*(AB + AG)
-AA_AB <- BB + (1/2)*(AB + BG) + (b/2)*(AG + BG) + b*GG
+AA_AA <- r*AA + (1/2)*(r*AB + ((r+r_xG)/2)*AG)
+AA_AB <- r*BB + (1/2)*(r*AB + ((r+r_xG)/2)*BG) + (b/2)*(((r+r_xG)/2)*AG + ((r+r_xG)/2)*BG) + b*((r+r_GG)/2)*GG
 AA_BB <- 0
-AA_AG <- (1-b)*(1-g)*(1/2)*(AG + BG) + (1-b)*(1-g)*GG
+AA_AG <- (1-b)*(1-g)*(1/2)*((r+r_xG)/2)*(AG + BG) + (1-b)*(1-g)*((r+r_GG)/2)*GG
 AA_BG <- 0
-AA_GG <- (1-b)*(g)*(1/2)*(AG + BG) + (1-b)*(g)*GG
+AA_GG <- (1-b)*(g)*(1/2)*((r+r_xG)/2)*(AG + (BG) + (1-b)*(g)*((r+r_xG)/2)*GG
 
 #Row 2
-AB_AA <- (1/2)*(AA) + (1/4)*(AB + AG)
-AB_AB <- (1/2)*(AA + AB + BB) + (1/4)*(AG + BG) + (1/4)*b*(AG + BG) + (1/2)*b*GG
-AB_BB <- (1/4)*(AB + BG) + (1/2)*BB + (1/4)*b*(AG + BG) + (1/2)*b*GG
+AB_AA <- (1/2)*r*AA + (1/4)*(r*AB + ((r+r_xG)/2)*AG)
+AB_AB <- (1/2)*r*(AA + AB + BB) + (1/4)*((r+r_xG)/2)*(AG + BG) + (1/4)*b*((r+r_xG)/2)*(AG + BG) + (1/2)*b*((r+r_GG)/2)*GG
+AB_BB <- (1/4)*(r*AB + ((r+r_xG)/2)*BG) + (1/2)*r*BB + (1/4)*b*(AG + BG) + (1/2)*b*GG
 AB_AG <- (1/4)*(1-b)*(1-g)*(AG + BG) + (1/2)*(1-b)*(1-g)*GG
 AB_BG <- (1/4)*(1-b)*(AG + BG) + (1/2)*(1-b)*GG
 AB_GG <- (1/4)*(1-b)*(g)*(AG + BG) + (1/2)*(1-b)*(g)*GG
