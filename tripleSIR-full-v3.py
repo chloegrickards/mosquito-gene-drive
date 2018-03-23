@@ -1,13 +1,9 @@
-# sorry it's long
+# Import statements
 import numpy as np
 import math
 import scipy
 import pylab as pl
 from scipy.integrate import odeint
-
-#To Do:
-# - add malaria equations for mosquito and human
-# - if time, make prettier by putting the transition matrix in another function or scrupt or something
 
 ##GENERAL CONSTANTS##
 # Number of mosquito generations
@@ -30,14 +26,15 @@ AG[0] = 0.000000000001
 BG[0] = 0.000000000001
 GG[0] = 1
 
-##GENE DRIVE RATES##
-# gamma is the gene drive dominance (relavent to AG and BG)
-# Verify in literature
+##GENE DRIVE CONSTANTS##
+# gamma is the gene drive dominance (relevant to AG and BG)
+# No literature value yet
 gamma = 0.5
 #
 # xi is a measure of how much infection resistance that a gene drive can pass on to a mosquito
-# Verify in literature
-xi = 0.9
+# Taken from the anti-effector gene used by Gantz et al. 2015
+# Exact number found in Isaacs et al. 2011
+xi = 0.84
 #
 # g is gene drive efficiency
 # from Gantz et al.
@@ -46,40 +43,45 @@ g = 0.98
 # b is gene drive resistance rate
 # chance of becoming resistant to the gene drive
 # arbitratily chosen for now
-# Verify in literature
-b = 0.3
+# Gantz et al.
+# b = 0.05 in our modification
+b = 0.25
 
-##POPULATION RATES##
-# Death Rates
+##POPULATION CONSTANTS##
 # lspan is life span
 # Units = number of generations
-# Verify in literature
-lspan = 3
+# From CDC
+lspan = 2
+#
 # delta is natural death rate
 delta = 1 / lspan
-# delta_i is infection Death Rate
-# Verify in literature
-delta_i = 0.5
 #
-# Growth Rates
+# delta_i is infection Death Rate
+# Cator et al.
+delta_i = 0.25
+#
 # r = intrinsic growth rate
 # r = how many mosquitoes are born from a mating event
-# Use r for genotypes: AA, AB, BB
+# adjusted growth rate for genotypes: AA, AB, BB
 # Units = number of mosquitoes
-r = 40
+# Rossignol et al.
+r = 89
+#
 # cost_g = fitness cost of the gene drive
 # cost_g = how many less mosquitoes are born from a mating event
 # Units = number of mosquitoes
-# Verify in literature
-cost_g = 0.1 * r
+# Unverified, somewhat supported by Vella et al.
+cost_g = 0.3 * r
+#
 # r_xG = adjusted growth rate for genotypes: AG, BG
 r_xG = r - cost_g
+#
 # r_GG = adjusted growth rate for genotype: GG
 r_GG = r - 2 * cost_g
 #
 # k is the carrying capacity
 # Units = number of mosquitoes
-k = 100
+k = 200
 
 ##GENE DRIVE SEIR##
 Sg = np.zeros(ngen)
@@ -109,9 +111,11 @@ Sh[0] = (1-Xh[0])*Nh
 Ih = np.zeros(ngen)
 Ih[0] = Xh[0]*Nh
 
+## MALARIA CONSTANTS ##
 #Generation time in days
 gen = 30
 # Expected number of bites on humans per mosquito
+# a = 0.01 in our modification
 a = 0.15
 # Probability of infection of an uninfected mosquito by biting an infectious human
 c = 0.82
@@ -119,11 +123,10 @@ c = 0.82
 p = 0.81
 # Force of mortality (i.e. instantaneous mortality rate) for mosquitoes
 f = -np.log(p)
-# Man biting rate
-# Units = bites/man/hour
+# Rate of mosquito emergence
 ma = 2.06
 # Equilibrium mosquito density per human
-m = ma/a
+m = ma/f
 # Transmission efficiency from infectious mosquito to susceptible human
 # Churcher 2017
 tr = 0.092
